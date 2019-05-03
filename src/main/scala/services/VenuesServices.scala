@@ -7,9 +7,8 @@ import io.circe.parser.{decode, parse}
 
 object VenuesServices {
 
-
   def getVenues: String = {
-    VenuesDAO.getAllVenues()
+    VenuesDAO.getAllVenues
   }
 
   def decodeVenue(entity: String): Option[SimpleVenueEntity] = { //TODO improve Decoding and move to services
