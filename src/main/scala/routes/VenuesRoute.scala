@@ -5,7 +5,10 @@ import akka.http.scaladsl.server.Directives.{complete, get, pathPrefix, _}
 import akka.http.scaladsl.server.Route
 import services.VenuesServices
 
-object VenuesRoute {
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.util.{Failure, Success}
+
+class VenuesRoute()(implicit system: ExecutionContext) {
 
   val venuesPath = "venues"
   val buyPath = "buy"
@@ -40,13 +43,16 @@ object VenuesRoute {
       id =>
         post {
           entity(as[String]) { json =>
-            complete(VenuesServices.buyVenue(id, json))
+            val transaction: Future[String] = VenuesServices.executeTransaction(id, json)
+            onSuccess(transaction) {
+              case _ =>complete(transaction.mapTo[String])
+            }
           }
         }
 
     }
 
-  val routes: Route =
+  val route: Route =
     pathPrefix(venuesPath) {
       getVenueRoute ~
         createAndDeleteVenueRoute ~

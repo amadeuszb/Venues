@@ -17,8 +17,8 @@ object ServicesBoot {
     implicit val system: ActorSystem = ActorSystem("my-system")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
-
-    val route = Routes.routes
+    val mainRoute = new Routes()
+    val route = mainRoute.routes
     val port = 8080
     val interface = "localhost"
     val bindingFuture = Http().bindAndHandle(route, interface, port)

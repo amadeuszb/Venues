@@ -8,7 +8,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class VenuesRouteTest extends WordSpec with Matchers with ScalatestRouteTest {
 
-  private val smallRoute: Route = VenuesRoute.routes
+  private val smallRoute: Route = new VenuesRoute().route
   private val sampleId = "687e8292-1afd-4cf7-87db-ec49a3ed93b1"
   private val jsonVenue = "{\"name\": \"Rynek Główny\",\"price\": 1000}"
   private val jsonWrongVenue = "{\"id\":\"" + sampleId + "\",\"namesd\":\"Rynek Główny\",\"pr1ice\":100110}"

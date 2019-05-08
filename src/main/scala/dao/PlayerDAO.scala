@@ -1,5 +1,7 @@
 package dao
 
+import entites.PlayerEntity
+
 import scala.collection.mutable
 
 
@@ -11,6 +13,9 @@ object PlayerDAO {
 
   def getMoneyByPlayerId(playerId: String): Long = {
     playersMap.getOrElse(playerId, 0)
+  }
+  def getPlayerById(playerId: String) ={
+    PlayerEntity(playerId,playersMap.getOrElse(playerId, 0))
   }
 
   def payForVenue(playerId: String, price: Long): Unit = {
