@@ -2,6 +2,7 @@
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
+import routes.Routes
 import scalikejdbc._
 
 import scala.concurrent.ExecutionContextExecutor
@@ -9,7 +10,7 @@ import scala.io.StdIn
 
 object ServicesBoot {
 
-  implicit lazy val s = AutoSession
+  implicit lazy val session: AutoSession.type = AutoSession
 
   def main(args: Array[String]) {
 
@@ -18,8 +19,9 @@ object ServicesBoot {
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
     val route = Routes.routes
-
-    val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
+    val port = 8080
+    val interface = "localhost"
+    val bindingFuture = Http().bindAndHandle(route, interface, port)
 
     StdIn.readLine()
     bindingFuture

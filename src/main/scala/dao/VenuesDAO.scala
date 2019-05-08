@@ -1,6 +1,6 @@
 package dao
 
-import entity.VenueEntity
+import entites.VenueEntity
 
 import scala.collection.mutable
 
@@ -12,7 +12,7 @@ object VenuesDAO {
     venuesMap
   }
 
-  def buyVenue(playerId: String, venueId: String): Boolean = { //TODO move part of actions to PlayerDAO
+  def buyVenue(playerId: String, venueId: String): Boolean = {
     val playersMoney = PlayerDAO.getMoneyByPlayerId(playerId)
     val venue = getVenueById(venueId)
     if (venue.isDefined && (playersMoney > venue.get.price)) {

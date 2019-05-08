@@ -7,13 +7,16 @@ scalaVersion := "2.12.8"
 resolvers += Resolver.sonatypeRepo("releases")
 addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
 
+val akkaHttpVersion = "10.1.8"
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-http" % "10.1.8",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.1.8" % Test
+  "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test
 )
+val akkaStreamVersion = "2.5.22"
+
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-stream" % "2.5.22",
-  "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.22" % Test
+  "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion,
+  "com.typesafe.akka" %% "akka-stream-testkit" % akkaStreamVersion % Test
 )
 libraryDependencies ++= Seq(
   "org.scalikejdbc" %% "scalikejdbc"       % "3.3.2",
@@ -21,22 +24,14 @@ libraryDependencies ++= Seq(
   "ch.qos.logback"  %  "logback-classic"   % "1.2.3"
 )
 
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.19",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.1.8"
-)
-val circeVersion = "0.10.0"
+val scalaTestVersion = "3.0.5"
+libraryDependencies += "org.scalactic" %% "scalactic" % scalaTestVersion
+libraryDependencies += "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+val circeVersion = "0.10.0"
 
 libraryDependencies ++= Seq(
   "io.circe" %% "circe-core",
   "io.circe" %% "circe-generic",
   "io.circe" %% "circe-parser"
 ).map(_ % circeVersion)
-
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.19",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.1.8"
-)
