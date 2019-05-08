@@ -1,40 +1,38 @@
 package dao
 
-import entity.VenueEntity
-import io.circe.Printer
-import io.circe.generic.auto._
-import io.circe.syntax._
+import entites.VenueEntity
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
-object VenuesDAO { //TODO VAR to VAL
+object VenuesDAO {
 
-  private var venues: ListBuffer[VenueEntity] = ListBuffer.empty
-  private val printer = Printer.noSpaces.copy(dropNullValues = true)
-  private var venuesMap = mutable.Map[String, String]
+  private var venuesMap = new mutable.HashMap[String, VenueEntity]
 
-  def getAllVenues: String = {
-    venues.asJson.pretty(printer)
+  def getAllVenues: mutable.HashMap[String, VenueEntity] = {
+    venuesMap
   }
 
-  def deleteVenueById(id: String): Unit = { //TODO better deleting
-    venues = venues.filter(element => element.id != id)
+  def buyVenue(playerId: String, venueId: String): Boolean = {
+    val playersMoney = PlayerDAO.getMoneyByPlayerId(playerId)
+    val venue = getVenueById(venueId)
+    if (venue.isDefined && (playersMoney > venue.get.price)) {
+      addOrUpdateVenue(venue.get.copy(owner = Some(playerId)))
+      true
+    }
+    else false
   }
 
   def addOrUpdateVenue(venue: VenueEntity): Unit = {
     deleteVenueById(venue.id)
-    venues += venue
+    venuesMap += ((venue.id, venue))
   }
 
-  def buyVenue(playerId: String, venueId: String): Boolean = { //TODO move part of actions to PlayerDAO
-    val player = PlayerDAO.getById(playerId).get
-    val venue = venues.find(v => v.id == venueId).get //TODO
-    if (player.money > venue.price) {
-      addOrUpdateVenue(venue.copy(owner = Some(player.id)))
-      true
-    }
-    else false
+  def deleteVenueById(id: String): Unit = {
+    venuesMap.remove(id)
+  }
+
+  def getVenueById(id: String): Option[VenueEntity] = {
+    venuesMap.get(id)
   }
 
 
