@@ -1,14 +1,16 @@
 package routes
 
+import akka.actor.{Actor, ActorRef}
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives.{complete, get, pathPrefix, _}
 import akka.http.scaladsl.server.Route
 import services.VenuesServices
 
-object VenuesRoute {
+object VenuesRoute extends Actor {
 
   val venuesPath = "venues"
   val buyPath = "buy"
+  //def createRoot: ActorRef = context.actorOf(VenuesServices.props(0, initialyRemoved = true))
 
   val getVenueRoute: Route =
     pathEnd {

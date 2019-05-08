@@ -1,9 +1,11 @@
 package dao
 
+import akka.actor.Actor
+
 import scala.collection.mutable
 
 
-object PlayerDAO {
+object PlayerDAO{
 
   private val playersMap = new mutable.HashMap[String, Long]()
   playersMap.put("player2", 2000)
