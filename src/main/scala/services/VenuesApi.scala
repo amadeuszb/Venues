@@ -1,37 +1,27 @@
 package services
 
 import akka.actor.ActorRef
-import akka.util.Timeout
-import akka.actor.{ActorRef, ActorSystem}
-import akka.util.Timeout
 import akka.pattern.ask
-import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server._
+import akka.util.Timeout
+import messages.Manager.{AddVenue, BuyVenue, BuyVenueResponse, DeleteVenue, GetVenuesResponse}
+import messages.VenueManager.GetVenues
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
-import StatusCodes._
-import entites.VenueEntity
-import messages.VenueSeller.GetVenues
+import scala.concurrent.Future
 
 trait VenuesApi {
 
   def createManager(): ActorRef
 
-  implicit def executionContext: ExecutionContext
   implicit def requestTimeout: Timeout
 
-  lazy val game: ActorRef = createManager()
+  lazy val mainActor: ActorRef = createManager()
 
-/*
-  def createVenue(id: String, json: String): Future[VerVenues] = {
-    val actualVenue = Decoders.decodeVenue(json)
-    game.ask(CreateEvent(event, numberOfTickets))
-      .mapTo[EventResponse]
-  }
-*/
+  def getVenues(): Future[GetVenuesResponse] = mainActor.ask(GetVenues).mapTo[GetVenuesResponse]
 
-  def getVenues(): Future[Vector[VenueEntity]] = game.ask(GetVenues).mapTo[Vector[VenueEntity]]
+  def addVenues(venueId: String, json: String): Future[Any] = mainActor.ask(AddVenue(venueId, json))
 
+  def deleteVenue(venueId: String) = mainActor.ask(DeleteVenue(venueId))
+
+  def buyVenue(venueId: String, json: String): Future[BuyVenueResponse] = mainActor.ask(BuyVenue(venueId: String, json: String)).mapTo[BuyVenueResponse]
 
 }

@@ -1,14 +1,20 @@
 package routes
 
+import java.time.Duration
+
+import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCode
 import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.testkit.ScalatestRouteTest
+import akka.http.scaladsl.testkit.{RouteTestTimeout, ScalatestRouteTest}
+import akka.util.Timeout
 import io.circe.syntax._
 import org.scalatest.{Matchers, WordSpec}
 
-class VenuesRouteTest extends WordSpec with Matchers with ScalatestRouteTest {
+import scala.concurrent.duration.DurationInt
 
-  private val smallRoute: Route = VenuesRoute.routes
+class VenuesRouteTest extends WordSpec with Matchers with ScalatestRouteTest {
+  implicit def default(implicit system: ActorSystem) = RouteTestTimeout(10.seconds)
+  private val smallRoute: Route = new VenuesRoute(ActorSystem("my-system"),Timeout.create(Duration.ofSeconds(10))).routes
   private val sampleId = "687e8292-1afd-4cf7-87db-ec49a3ed93b1"
   private val jsonVenue = "{\"name\": \"Rynek Główny\",\"price\": 1000}"
   private val jsonWrongVenue = "{\"id\":\"" + sampleId + "\",\"namesd\":\"Rynek Główny\",\"pr1ice\":100110}"

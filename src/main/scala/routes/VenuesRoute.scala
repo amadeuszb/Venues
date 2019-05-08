@@ -1,22 +1,26 @@
 package routes
 
-import akka.actor.{Actor, ActorRef}
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
+import akka.actor.{ActorRef, ActorSystem}
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.Directives.{complete, get, pathPrefix, _}
 import akka.http.scaladsl.server.Route
-import services.VenuesServices
+import akka.util.Timeout
+import messages.Manager
+import messages.Manager.{BuyVenueResponse, GetVenuesResponse}
+import services.VenuesApi
 
-object VenuesRoute extends Actor {
+class VenuesRoute(system: ActorSystem, timeout: Timeout) extends VenuesApi {
 
   val venuesPath = "venues"
   val buyPath = "buy"
-  //def createRoot: ActorRef = context.actorOf(VenuesServices.props(0, initialyRemoved = true))
 
   val getVenueRoute: Route =
     pathEnd {
       get {
         pathEnd {
-          complete(HttpEntity(ContentTypes.`application/json`, VenuesServices.getVenues))
+          onSuccess(getVenues()) {
+            case GetVenuesResponse(value) => complete(value)
+          }
         }
       }
     }
@@ -26,11 +30,14 @@ object VenuesRoute extends Actor {
       id => {
         pathEnd {
           delete {
-            VenuesServices.deleteVenue(id)
-            complete(HttpResponse(StatusCodes.OK))
+            onSuccess(deleteVenue(id)) {
+              case _ => complete(HttpResponse(StatusCodes.OK)) //TODO
+            }
           } ~ put {
-            entity(as[String]) { json =>
-              complete(VenuesServices.addVenue(id, json))
+            entity(as[String]) { json => complete("")
+              onSuccess(addVenues(id,json)) {
+                case _ => complete(HttpResponse(StatusCodes.OK)) //TODO
+              }
             }
           }
         }
@@ -42,7 +49,9 @@ object VenuesRoute extends Actor {
       id =>
         post {
           entity(as[String]) { json =>
-            complete(VenuesServices.buyVenue(id, json))
+            onSuccess(buyVenue(id,json)) {
+              case BuyVenueResponse(value) => complete(value) //TODO
+            }
           }
         }
 
@@ -55,5 +64,8 @@ object VenuesRoute extends Actor {
         buyVenueRoute
     }
 
+  override def createManager(): ActorRef = system.actorOf(Manager.props)
+
+  override implicit def requestTimeout: Timeout = timeout
 }
 

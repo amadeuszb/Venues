@@ -1,13 +1,13 @@
 package messages
 
-import actors.VenueSeller
+import actors.VenueManager
 import akka.actor.Props
 import entites.{PlayerEntity, VenueEntity}
 
 
 
-object VenueSeller {
-  def props() = Props(new VenueSeller())
+object VenueManager {
+  def props() = Props(new VenueManager())
 
   case class AddOrUpdate(venue: VenueEntity)
   case class Buy(venueId: String, player: PlayerEntity)

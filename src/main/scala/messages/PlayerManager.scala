@@ -1,6 +1,6 @@
 package messages
 
-import actors.{PlayerManager, VenueSeller}
+import actors.{PlayerManager, VenueManager}
 import akka.actor.Props
 import entites.VenueEntity
 

@@ -12,8 +12,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test
 )
-val akkaStreamVersion = "2.5.12"
-val akkaVersion = "2.5.12"
+val akkaStreamVersion = "2.5.22"
+val akkaVersion = "2.5.22"
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor"      % akkaVersion,
   "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion,
